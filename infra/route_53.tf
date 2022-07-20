@@ -1,6 +1,6 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record
 data "aws_route53_zone" "primary" {
-  name = "<zone_name>"
+  name = "example.com"
 }
 
 resource "aws_route53_record" "<app_name>" {
