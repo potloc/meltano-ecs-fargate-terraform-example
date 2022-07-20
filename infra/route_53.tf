@@ -5,7 +5,7 @@ data "aws_route53_zone" "primary" {
 
 resource "aws_route53_record" "<app_name>" {
   zone_id = data.aws_route53_zone.primary.zone_id
-  name    = "<resource_name>"
+  name    = "airflow.example.com"
   type    = "A"
 
   alias {
