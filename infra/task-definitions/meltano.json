@@ -1,0 +1,418 @@
+[
+  {
+    "name": "log_router_config",
+    "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/alpine:3.15",
+    "essential": false,
+    "cpu": 0,
+    "command": [
+      "/bin/sh",
+      "-c",
+      "echo $FLUENT_BIT_CONFIG | base64 -d > /mnt/fluent-bit/fluent-bit.conf && echo $FLUENT_BIT_PARSERS_CONFIG | base64 -d > /mnt/fluent-bit/parsers.conf"
+    ],
+    "environment": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${aws_cloudwatch_log_router_log_group_name}",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "log_router"
+      }
+    },
+    "mountPoints": [
+      {
+        "containerPath": "/mnt/fluent-bit",
+        "sourceVolume": "fluent-bit"
+      }
+    ],
+    "portMappings": [],
+    "secrets": [
+      {
+        "name": "FLUENT_BIT_CONFIG",
+        "valueFrom": "${fluent_bit_config_arn}"
+      },
+      {
+        "name": "FLUENT_BIT_PARSERS_CONFIG",
+        "valueFrom": "${fluent_bit_parsers_config_arn}"
+      }
+    ],
+    "volumesFrom": []
+  },
+  {
+    "name": "log_router",
+    "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/fluent-bit-plugin-loki:2.5.0-amd64",
+    "essential": true,
+    "command": [
+      "/fluent-bit/bin/fluent-bit",
+      "-e",
+      "/fluent-bit/bin/out_grafana_loki.so",
+      "-c",
+      "/fluent-bit/etc/potloc/fluent-bit.conf"
+    ],
+    "cpu": 256,
+    "memory": 256,
+    "dependsOn": [
+      {
+        "containerName": "log_router_config",
+        "condition": "SUCCESS"
+      }
+    ],
+    "environment": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${aws_cloudwatch_log_router_log_group_name}",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "log_router"
+      }
+    },
+    "memoryReservation": 128,
+    "mountPoints": [
+      {
+        "containerPath": "/fluent-bit/etc/potloc",
+        "sourceVolume": "fluent-bit"
+      },
+      {
+        "containerPath": "/project/.meltano/logs",
+        "sourceVolume": "meltano-logs"
+      },
+      {
+        "containerPath": "/project/.meltano/run/airflow",
+        "sourceVolume": "meltano-airflow"
+      }
+    ],
+    "portMappings": [],
+    "secrets": [
+      {
+        "name": "LOKI_URL",
+        "valueFrom": "${secrets_arn}:LOKI_URL::"
+      }
+    ],
+    "user": "0",
+    "volumesFrom": []
+  },
+  {
+    "name": "airflow-scheduler",
+    "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/meltano/meltano:latest",
+    "cpu": 768,
+    "memory": 2048,
+    "essential": true,
+    "command": ["invoke", "airflow", "scheduler"],
+    "dependsOn": [
+      {
+        "containerName": "log_router",
+        "condition": "START"
+      }
+    ],
+    "environment": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${aws_cloudwatch_airflow_scheduler_log_group_name}",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "mountPoints": [
+      {
+        "containerPath": "/project/.meltano/logs",
+        "sourceVolume": "meltano-logs"
+      },
+      {
+        "containerPath": "/project/.meltano/run/airflow",
+        "sourceVolume": "meltano-airflow"
+      }
+    ],
+    "portMappings": [
+      {
+        "hostPort": 8793,
+        "protocol": "tcp",
+        "containerPort": 8793
+      }
+    ],
+    "secrets": [
+      {
+        "name": "AIRFLOW__CORE__EXECUTOR",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__EXECUTOR::"
+      },
+      {
+        "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:airflow/rds-1ErqIF:url::"
+      },
+      {
+        "name": "MELTANO_DATABASE_URI",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/rds-YK6UGI:url::"
+      },
+      {
+        "name": "TARGET_STITCH__SNAPCHAT_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__SNAPCHAT_TOKEN::"
+      },
+      {
+        "name": "TARGET_STITCH__WRIKE_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__WRIKE_TOKEN::"
+      },
+      {
+        "name": "TARGET_STITCH__HUBSPOT_V3_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__HUBSPOT_V3_TOKEN::"
+      },
+      {
+        "name": "TARGET_STITCH__TWITTER_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__TWITTER_TOKEN::"
+      },
+      {
+        "name": "TARGET_STITCH__GITHUB_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__GITHUB_TOKEN::"
+      },
+      {
+        "name": "TARGET_STITCH__HIBOB_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__HIBOB_TOKEN::"
+      },
+      {
+        "name": "TARGET_STITCH__FACEBOOK_PAGES_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__FACEBOOK_PAGES_TOKEN::"
+      },
+      {
+        "name": "TAP_SNAPCHAT_ADS_CLIENT_SECRET",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_SNAPCHAT_ADS_CLIENT_SECRET::"
+      },
+      {
+        "name": "TAP_SNAPCHAT_ADS_REFRESH_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_SNAPCHAT_ADS_REFRESH_TOKEN::"
+      },
+      {
+        "name": "TAP_WRIKE_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_WRIKE_TOKEN::"
+      },
+      {
+        "name": "TAP_WRIKE_CLIENT_SECRET",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_WRIKE_CLIENT_SECRET::"
+      },
+      {
+        "name": "TAP_WRIKE_REFRESH_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_WRIKE_REFRESH_TOKEN::"
+      },
+      {
+        "name": "TAP_HUBSPOT_HAPIKEY",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_HUBSPOT_HAPIKEY::"
+      },
+      {
+        "name": "TAP_HUBSPOT_ACCESS_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_HUBSPOT_ACCESS_TOKEN::"
+      },
+      {
+        "name": "TAP_HUBSPOT_REFRESH_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_HUBSPOT_REFRESH_TOKEN::"
+      },
+      {
+        "name": "TAP_HUBSPOT_CLIENT_SECRET",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_HUBSPOT_CLIENT_SECRET::"
+      },
+      {
+        "name": "TAP_GITHUB_AUTH_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_GITHUB_AUTH_TOKEN::"
+      },
+      {
+        "name": "TAP_HIBOB_PASSWORD",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_HIBOB_PASSWORD::"
+      },
+      {
+        "name": "TAP_TWITTER_ADS_CONSUMER_KEY",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_TWITTER_ADS_CONSUMER_KEY::"
+      },
+      {
+        "name": "TAP_TWITTER_ADS_CONSUMER_SECRET",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_TWITTER_ADS_CONSUMER_SECRET::"
+      },
+      {
+        "name": "TAP_TWITTER_ADS_ACCESS_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_TWITTER_ADS_ACCESS_TOKEN::"
+      },
+      {
+        "name": "TAP_TWITTER_ADS_ACCESS_TOKEN_SECRET",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_TWITTER_ADS_ACCESS_TOKEN_SECRET::"
+      },
+      {
+        "name": "TAP_FACEBOOK_PAGES_ACCESS_TOKEN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_FACEBOOK_PAGES_ACCESS_TOKEN::"
+      },
+      {
+        "name": "TARGET_BIGQUERY_PROJECT_ID_STAGING",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:TARGET_BIGQUERY_PROJECT_ID_STAGING::"
+      },
+      {
+        "name": "TARGET_BIGQUERY_PROJECT_ID_DEV",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:TARGET_BIGQUERY_PROJECT_ID_DEV::"
+      },
+      {
+        "name": "TARGET_BIGQUERY_PROJECT_ID_PROD",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:TARGET_BIGQUERY_PROJECT_ID_PROD::"
+      },
+      {
+        "name": "TARGET_BIGQUERY_PROJECT_ID_DATA",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:TARGET_BIGQUERY_PROJECT_ID_DATA::"
+      },
+      {
+        "name": "DBT_BIGQUERY_TYPE",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_TYPE::"
+      },
+      {
+        "name": "DBT_BIGQUERY_PROJECT_ID",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_PROJECT_ID::"
+      },
+      {
+        "name": "DBT_BIGQUERY_PRIVATE_KEY_ID",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_PRIVATE_KEY_ID::"
+      },
+      {
+        "name": "DBT_BIGQUERY_PRIVATE_KEY",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_PRIVATE_KEY::"
+      },
+      {
+        "name": "DBT_BIGQUERY_CLIENT_EMAIL",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_CLIENT_EMAIL::"
+      },
+      {
+        "name": "DBT_BIGQUERY_CLIENT_ID",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_CLIENT_ID::"
+      },
+      {
+        "name": "DBT_BIGQUERY_AUTH_URI",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_AUTH_URI::"
+      },
+      {
+        "name": "DBT_BIGQUERY_TOKEN_URI",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_TOKEN_URI::"
+      },
+      {
+        "name": "DBT_BIGQUERY_AUTH_PROVIDER_X509_CERT_URL",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_AUTH_PROVIDER_X509_CERT_URL::"
+      },
+      {
+        "name": "DBT_BIGQUERY_CLIENT_X509_CERT_URL",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_CLIENT_X509_CERT_URL::"
+      },
+      {
+        "name": "AIRFLOW__CORE__FERNET_KEY",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__FERNET_KEY::"
+      }
+    ],
+    "volumesFrom": []
+  },
+  {
+    "name": "meltano-ui",
+    "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/meltano/meltano:latest",
+    "cpu": 512,
+    "memory": 1024,
+    "essential": false,
+    "command": ["ui"],
+    "dependsOn": [
+      {
+        "containerName": "log_router",
+        "condition": "START"
+      }
+    ],
+    "environment": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${aws_cloudwatch_meltano_ui_log_group_name}",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "mountPoints": [
+      {
+        "containerPath": "/project/.meltano/logs",
+        "sourceVolume": "meltano-logs"
+      },
+      {
+        "containerPath": "/project/.meltano/run/airflow",
+        "sourceVolume": "meltano-airflow"
+      }
+    ],
+    "portMappings": [
+      {
+        "hostPort": 5000,
+        "protocol": "tcp",
+        "containerPort": 5000
+      }
+    ],
+    "secrets": [
+      {
+        "name": "AIRFLOW__CORE__EXECUTOR",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__EXECUTOR::"
+      },
+      {
+        "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:airflow/rds-1ErqIF:url::"
+      },
+      {
+        "name": "MELTANO_DATABASE_URI",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/rds-YK6UGI:url::"
+      },
+      {
+        "name": "AIRFLOW__CORE__FERNET_KEY",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__FERNET_KEY::"
+      }
+    ],
+    "volumesFrom": []
+  },
+  {
+    "name": "airflow-webserver",
+    "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/meltano/meltano:latest",
+    "cpu": 512,
+    "memory": 1024,
+    "essential": false,
+    "command": ["invoke", "airflow", "webserver"],
+    "dependsOn": [
+      {
+        "containerName": "log_router",
+        "condition": "START"
+      }
+    ],
+    "environment": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${aws_cloudwatch_airflow_webserver_log_group_name}",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "mountPoints": [
+      {
+        "containerPath": "/project/.meltano/logs",
+        "sourceVolume": "meltano-logs"
+      },
+      {
+        "containerPath": "/project/.meltano/run/airflow",
+        "sourceVolume": "meltano-airflow"
+      }
+    ],
+    "portMappings": [
+      {
+        "hostPort": 8080,
+        "protocol": "tcp",
+        "containerPort": 8080
+      }
+    ],
+    "secrets": [
+      {
+        "name": "AIRFLOW__CORE__EXECUTOR",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__EXECUTOR::"
+      },
+      {
+        "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:airflow/rds-1ErqIF:url::"
+      },
+      {
+        "name": "MELTANO_DATABASE_URI",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/rds-YK6UGI:url::"
+      },
+      {
+        "name": "AIRFLOW__CORE__FERNET_KEY",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__FERNET_KEY::"
+      }
+    ],
+    "volumesFrom": []
+  }
+]
