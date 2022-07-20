@@ -3,19 +3,19 @@
 module "alb_airflow" {
   source = "terraform-aws-modules/alb/aws"
 
-  name               = "airflow-potloc-com"
+  name               = "airflow-<app_name>-com"
   load_balancer_type = "application"
   internal           = false
   idle_timeout       = 300
 
-  vpc_id          = data.aws_vpc.main.id
-  subnets         = data.aws_subnet_ids.public.ids
-  security_groups = [data.aws_security_group.default.id, aws_security_group.web.id]
+  vpc_id          = "<main_vpc_id>"
+  subnets         = "<subnet_id(s)>"
+  security_groups = ["<security_groups>"]
 
   # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group
   target_groups = [
     {
-      name                 = "airflow-potloc-com-target-group"
+      name                 = "<target_group_name>"
       backend_protocol     = "HTTP"
       backend_port         = 80
       target_type          = "ip"
@@ -36,7 +36,7 @@ module "alb_airflow" {
     {
       port               = 443
       protocol           = "HTTPS"
-      certificate_arn    = var.star_potloc_com_certificate_arn
+      certificate_arn    = "<certificate_arn>"
       target_group_index = 0
     }
   ]

@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     encrypt = true
-    bucket  = "potloc-terraform-state-production"
+    bucket  = "<bucket-name>"
     region  = "us-east-1"
     key     = "meltano/terraform.tfstate"
   }

@@ -1,6 +1,6 @@
 data "aws_vpc" "main" {
   tags = {
-    Name = "monitoring-potloc-com"
+    Name = "<main-vpc>"
   }
 }
 
