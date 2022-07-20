@@ -8,7 +8,7 @@ module "alb_airflow" {
   internal           = false
   idle_timeout       = 300
 
-  vpc_id          = "<main_vpc_id>"
+  vpc_id          = local.vpc_id
   subnets         = "<subnet_id(s)>"
   security_groups = ["<security_groups>"]
 
