@@ -3,7 +3,7 @@ data "aws_route53_zone" "primary" {
   name = "example.com"
 }
 
-resource "aws_route53_record" "<app_name>" {
+resource "aws_route53_record" "meltano" {
   zone_id = data.aws_route53_zone.primary.zone_id
   name    = "airflow.example.com"
   type    = "A"
