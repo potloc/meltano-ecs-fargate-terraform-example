@@ -9,4 +9,4 @@ Here is the TLDR for the repository:
     - Airflow scheduler
     - Meltano UI
     - Airflow webserver
-- To integrate persistence into our state, we tried to integrate [ECS](https://aws.amazon.com/ecs/) but this did not work, so we just used 2 [RDS](https://aws.amazon.com/rds/) integrations instead
+- To integrate persistence into our state, we tried to integrate [EFS](https://aws.amazon.com/efs/) but this did not work, so we just used 2 [RDS](https://aws.amazon.com/rds/) integrations instead
