@@ -3,7 +3,7 @@
 module "alb_airflow" {
   source = "terraform-aws-modules/alb/aws"
 
-  name               = "airflow-<app_name>-com"
+  name               = "airflow"
   load_balancer_type = "application"
   internal           = false
   idle_timeout       = 300
