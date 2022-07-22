@@ -9,7 +9,6 @@ locals {
   meltano_load_balancer_name = ""
   primary_name = "example.com."
   airflow_route_name = "airflow.example.com"
-  bucket_name = ""
   task_role_arn = ""
   execution_role_arn = ""
 
