@@ -1,4 +1,6 @@
-data "aws_vpc" "main" {}
+data "aws_vpc" "main" {
+  vpc_id = local.vpc_id
+}
 
 data "aws_subnet_ids" "private" {
   vpc_id = local.vpc_id
