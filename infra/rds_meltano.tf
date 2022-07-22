@@ -32,11 +32,6 @@ resource "aws_db_instance" "meltano" {
   iam_database_authentication_enabled = false
   db_subnet_group_name                = aws_db_subnet_group.meltano.name
   vpc_security_group_ids              = [data.aws_security_group.default.id]
-
-  tags = {
-    Terraform = "true"
-  }
-
   lifecycle {
     create_before_destroy = true
   }
@@ -45,10 +40,6 @@ resource "aws_db_instance" "meltano" {
 resource "aws_db_subnet_group" "meltano" {
   name       = "meltano"
   subnet_ids = data.aws_subnet_ids.private.ids
-
-  tags = {
-    Terraform = "true"
-  }
 }
 
 resource "random_string" "aws_db_instance_meltano_username" {

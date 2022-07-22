@@ -33,10 +33,6 @@ resource "aws_db_instance" "airflow" {
   db_subnet_group_name                = aws_db_subnet_group.meltano.name
   vpc_security_group_ids              = [data.aws_security_group.default.id]
 
-  tags = {
-    Terraform = "true"
-  }
-
   lifecycle {
     create_before_destroy = true
   }
