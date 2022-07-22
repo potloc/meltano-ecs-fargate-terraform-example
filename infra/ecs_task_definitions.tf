@@ -9,8 +9,8 @@ resource "aws_ecs_task_definition" "meltano" {
   })
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  task_role_arn            = "arn:aws:iam::451041955630:role/aws-ecs-task-role"
-  execution_role_arn       = "arn:aws:iam::451041955630:role/ecsTaskExecutionRole"
+  task_role_arn            = local.task_role_arn
+  execution_role_arn       = local.execution_role_arn
 
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
   cpu    = 2048
