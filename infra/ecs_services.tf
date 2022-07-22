@@ -24,4 +24,8 @@ resource "aws_ecs_service" "meltano" {
     security_groups  = [data.aws_security_group.default.id]
     subnets          = data.aws_subnet_ids.private.ids
   }
+
+  tags = {
+    Terraform = "true"
+  }
 }

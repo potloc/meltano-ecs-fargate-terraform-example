@@ -1,15 +1,28 @@
-data "aws_vpc" "main" {}
+data "aws_vpc" "main" {
+  tags = {
+    Name = "monitoring-potloc-com"
+  }
+}
 
 data "aws_subnet_ids" "private" {
   vpc_id = data.aws_vpc.main.id
+  tags = {
+    Tier = "private"
+  }
 }
 
 data "aws_subnet_ids" "public" {
   vpc_id = data.aws_vpc.main.id
+  tags = {
+    Tier = "public"
+  }
 }
 
 data "aws_security_group" "default" {
   vpc_id = data.aws_vpc.main.id
+  tags = {
+    Name = "default"
+  }
 }
 
 resource "aws_security_group" "web" {
@@ -31,5 +44,11 @@ resource "aws_security_group" "web" {
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "web-access"
+    Terraform   = "true"
+    Environment = terraform.workspace
   }
 }

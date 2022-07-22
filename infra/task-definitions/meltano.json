@@ -227,7 +227,24 @@
         "containerPort": 5000
       }
     ],
-    "secrets": ["INSERT_SECRETS_HERE"],
+    "secrets": [
+      {
+        "name": "AIRFLOW__CORE__EXECUTOR",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__EXECUTOR::"
+      },
+      {
+        "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:airflow/rds-1ErqIF:url::"
+      },
+      {
+        "name": "MELTANO_DATABASE_URI",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/rds-YK6UGI:url::"
+      },
+      {
+        "name": "AIRFLOW__CORE__FERNET_KEY",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__FERNET_KEY::"
+      }
+    ],
     "volumesFrom": []
   },
   {
@@ -259,7 +276,24 @@
         "containerPort": 8080
       }
     ],
-    "secrets": ["INSERT_SECRETS_HERE"],
+    "secrets": [
+      {
+        "name": "AIRFLOW__CORE__EXECUTOR",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__EXECUTOR::"
+      },
+      {
+        "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:airflow/rds-1ErqIF:url::"
+      },
+      {
+        "name": "MELTANO_DATABASE_URI",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/rds-YK6UGI:url::"
+      },
+      {
+        "name": "AIRFLOW__CORE__FERNET_KEY",
+        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__FERNET_KEY::"
+      }
+    ],
     "volumesFrom": []
   }
 ]
