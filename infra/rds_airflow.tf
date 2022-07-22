@@ -31,7 +31,7 @@ resource "aws_db_instance" "airflow" {
   publicly_accessible                 = false
   iam_database_authentication_enabled = false
   db_subnet_group_name                = aws_db_subnet_group.meltano.name
-  vpc_security_group_ids              = [data.aws_security_group.default.id]
+  vpc_security_group_ids              = [local.default_security_group_id]
 
   lifecycle {
     create_before_destroy = true

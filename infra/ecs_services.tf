@@ -21,7 +21,7 @@ resource "aws_ecs_service" "meltano" {
 
   network_configuration {
     assign_public_ip = false
-    security_groups  = [data.aws_security_group.default.id]
-    subnets          = data.aws_subnet_ids.private.ids
+    security_groups  = [local.default_security_group_id]
+    subnets          = local.subnet_ids
   }
 }

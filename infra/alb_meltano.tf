@@ -10,7 +10,7 @@ module "alb_meltano" {
 
   vpc_id          = local.vpc_id
   subnets         = local.public_subnets
-  security_groups = local.security_groups
+  security_groups = [local.default_security_group_id, local.web_security_group_id]
 
   # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group
   target_groups = [

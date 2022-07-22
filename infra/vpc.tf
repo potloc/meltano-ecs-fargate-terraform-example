@@ -1,21 +1,21 @@
 data "aws_vpc" "main" {}
 
 data "aws_subnet_ids" "private" {
-  vpc_id = data.aws_vpc.main.id
+  vpc_id = local.vpc_id
 }
 
 data "aws_subnet_ids" "public" {
-  vpc_id = data.aws_vpc.main.id
+  vpc_id = local.vpc_id
 }
 
 data "aws_security_group" "default" {
-  vpc_id = data.aws_vpc.main.id
+  vpc_id = local.vpc_id
 }
 
 resource "aws_security_group" "web" {
   name        = "web-access"
   description = "Grant HTTP & HTTPS access (Managed via Terraform)"
-  vpc_id      = data.aws_vpc.main.id
+  vpc_id      = local.vpc_id
 
   ingress {
     description = "HTTP"
