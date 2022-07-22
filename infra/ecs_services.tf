@@ -2,8 +2,8 @@
 
 resource "aws_ecs_service" "meltano" {
   name            = "meltano"
-  cluster         = module.ecs.cluster_id
-  task_definition = data.aws_ecs_task_definition.meltano_latest.arn
+  cluster         = module.ecs.ecs_cluster_id
+  task_definition = aws_ecs_task_definition.meltano.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 

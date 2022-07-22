@@ -1,108 +1,11 @@
 [
   {
-    "name": "log_router_config",
-    "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/alpine:3.15",
-    "essential": false,
-    "cpu": 0,
-    "command": [
-      "/bin/sh",
-      "-c",
-      "echo $FLUENT_BIT_CONFIG | base64 -d > /mnt/fluent-bit/fluent-bit.conf && echo $FLUENT_BIT_PARSERS_CONFIG | base64 -d > /mnt/fluent-bit/parsers.conf"
-    ],
-    "environment": [],
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-group": "${aws_cloudwatch_log_router_log_group_name}",
-        "awslogs-region": "us-east-1",
-        "awslogs-stream-prefix": "log_router"
-      }
-    },
-    "mountPoints": [
-      {
-        "containerPath": "/mnt/fluent-bit",
-        "sourceVolume": "fluent-bit"
-      }
-    ],
-    "portMappings": [],
-    "secrets": [
-      {
-        "name": "FLUENT_BIT_CONFIG",
-        "valueFrom": "${fluent_bit_config_arn}"
-      },
-      {
-        "name": "FLUENT_BIT_PARSERS_CONFIG",
-        "valueFrom": "${fluent_bit_parsers_config_arn}"
-      }
-    ],
-    "volumesFrom": []
-  },
-  {
-    "name": "log_router",
-    "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/fluent-bit-plugin-loki:2.5.0-amd64",
-    "essential": true,
-    "command": [
-      "/fluent-bit/bin/fluent-bit",
-      "-e",
-      "/fluent-bit/bin/out_grafana_loki.so",
-      "-c",
-      "/fluent-bit/etc/potloc/fluent-bit.conf"
-    ],
-    "cpu": 256,
-    "memory": 256,
-    "dependsOn": [
-      {
-        "containerName": "log_router_config",
-        "condition": "SUCCESS"
-      }
-    ],
-    "environment": [],
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-group": "${aws_cloudwatch_log_router_log_group_name}",
-        "awslogs-region": "us-east-1",
-        "awslogs-stream-prefix": "log_router"
-      }
-    },
-    "memoryReservation": 128,
-    "mountPoints": [
-      {
-        "containerPath": "/fluent-bit/etc/potloc",
-        "sourceVolume": "fluent-bit"
-      },
-      {
-        "containerPath": "/project/.meltano/logs",
-        "sourceVolume": "meltano-logs"
-      },
-      {
-        "containerPath": "/project/.meltano/run/airflow",
-        "sourceVolume": "meltano-airflow"
-      }
-    ],
-    "portMappings": [],
-    "secrets": [
-      {
-        "name": "LOKI_URL",
-        "valueFrom": "${secrets_arn}:LOKI_URL::"
-      }
-    ],
-    "user": "0",
-    "volumesFrom": []
-  },
-  {
     "name": "airflow-scheduler",
     "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/meltano/meltano:latest",
-    "cpu": 768,
+    "cpu": 1024,
     "memory": 2048,
     "essential": true,
     "command": ["invoke", "airflow", "scheduler"],
-    "dependsOn": [
-      {
-        "containerName": "log_router",
-        "condition": "START"
-      }
-    ],
     "environment": [],
     "logConfiguration": {
       "logDriver": "awslogs",
@@ -114,12 +17,8 @@
     },
     "mountPoints": [
       {
-        "containerPath": "/project/.meltano/logs",
-        "sourceVolume": "meltano-logs"
-      },
-      {
         "containerPath": "/project/.meltano/run/airflow",
-        "sourceVolume": "meltano-airflow"
+        "sourceVolume": "meltano-volume"
       }
     ],
     "portMappings": [
@@ -155,6 +54,7 @@
         "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__HUBSPOT_V3_TOKEN::"
       },
       {
+
         "name": "TARGET_STITCH__TWITTER_TOKEN",
         "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__TWITTER_TOKEN::"
       },
@@ -294,6 +194,7 @@
         "name": "AIRFLOW__CORE__FERNET_KEY",
         "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__FERNET_KEY::"
       }
+
     ],
     "volumesFrom": []
   },
@@ -304,12 +205,6 @@
     "memory": 1024,
     "essential": false,
     "command": ["ui"],
-    "dependsOn": [
-      {
-        "containerName": "log_router",
-        "condition": "START"
-      }
-    ],
     "environment": [],
     "logConfiguration": {
       "logDriver": "awslogs",
@@ -321,12 +216,8 @@
     },
     "mountPoints": [
       {
-        "containerPath": "/project/.meltano/logs",
-        "sourceVolume": "meltano-logs"
-      },
-      {
         "containerPath": "/project/.meltano/run/airflow",
-        "sourceVolume": "meltano-airflow"
+        "sourceVolume": "meltano-volume"
       }
     ],
     "portMappings": [
@@ -363,12 +254,6 @@
     "memory": 1024,
     "essential": false,
     "command": ["invoke", "airflow", "webserver"],
-    "dependsOn": [
-      {
-        "containerName": "log_router",
-        "condition": "START"
-      }
-    ],
     "environment": [],
     "logConfiguration": {
       "logDriver": "awslogs",
@@ -380,12 +265,8 @@
     },
     "mountPoints": [
       {
-        "containerPath": "/project/.meltano/logs",
-        "sourceVolume": "meltano-logs"
-      },
-      {
         "containerPath": "/project/.meltano/run/airflow",
-        "sourceVolume": "meltano-airflow"
+        "sourceVolume": "meltano-volume"
       }
     ],
     "portMappings": [
