@@ -31,168 +31,19 @@
     "secrets": [
       {
         "name": "AIRFLOW__CORE__EXECUTOR",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__EXECUTOR::"
+        "valueFrom": "example_core_executor"
       },
       {
         "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:airflow/rds-1ErqIF:url::"
+        "valueFrom": "example_sql_alchemy_connection"
       },
       {
         "name": "MELTANO_DATABASE_URI",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/rds-YK6UGI:url::"
-      },
-      {
-        "name": "TARGET_STITCH__SNAPCHAT_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__SNAPCHAT_TOKEN::"
-      },
-      {
-        "name": "TARGET_STITCH__WRIKE_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__WRIKE_TOKEN::"
-      },
-      {
-        "name": "TARGET_STITCH__HUBSPOT_V3_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__HUBSPOT_V3_TOKEN::"
-      },
-      {
-
-        "name": "TARGET_STITCH__TWITTER_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__TWITTER_TOKEN::"
-      },
-      {
-        "name": "TARGET_STITCH__GITHUB_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__GITHUB_TOKEN::"
-      },
-      {
-        "name": "TARGET_STITCH__HIBOB_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__HIBOB_TOKEN::"
-      },
-      {
-        "name": "TARGET_STITCH__FACEBOOK_PAGES_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TARGET_STITCH__FACEBOOK_PAGES_TOKEN::"
-      },
-      {
-        "name": "TAP_SNAPCHAT_ADS_CLIENT_SECRET",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_SNAPCHAT_ADS_CLIENT_SECRET::"
-      },
-      {
-        "name": "TAP_SNAPCHAT_ADS_REFRESH_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_SNAPCHAT_ADS_REFRESH_TOKEN::"
-      },
-      {
-        "name": "TAP_WRIKE_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_WRIKE_TOKEN::"
-      },
-      {
-        "name": "TAP_WRIKE_CLIENT_SECRET",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_WRIKE_CLIENT_SECRET::"
-      },
-      {
-        "name": "TAP_WRIKE_REFRESH_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_WRIKE_REFRESH_TOKEN::"
-      },
-      {
-        "name": "TAP_HUBSPOT_HAPIKEY",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_HUBSPOT_HAPIKEY::"
-      },
-      {
-        "name": "TAP_HUBSPOT_ACCESS_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_HUBSPOT_ACCESS_TOKEN::"
-      },
-      {
-        "name": "TAP_HUBSPOT_REFRESH_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_HUBSPOT_REFRESH_TOKEN::"
-      },
-      {
-        "name": "TAP_HUBSPOT_CLIENT_SECRET",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_HUBSPOT_CLIENT_SECRET::"
-      },
-      {
-        "name": "TAP_GITHUB_AUTH_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_GITHUB_AUTH_TOKEN::"
-      },
-      {
-        "name": "TAP_HIBOB_PASSWORD",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_HIBOB_PASSWORD::"
-      },
-      {
-        "name": "TAP_TWITTER_ADS_CONSUMER_KEY",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_TWITTER_ADS_CONSUMER_KEY::"
-      },
-      {
-        "name": "TAP_TWITTER_ADS_CONSUMER_SECRET",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_TWITTER_ADS_CONSUMER_SECRET::"
-      },
-      {
-        "name": "TAP_TWITTER_ADS_ACCESS_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_TWITTER_ADS_ACCESS_TOKEN::"
-      },
-      {
-        "name": "TAP_TWITTER_ADS_ACCESS_TOKEN_SECRET",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_TWITTER_ADS_ACCESS_TOKEN_SECRET::"
-      },
-      {
-        "name": "TAP_FACEBOOK_PAGES_ACCESS_TOKEN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:TAP_FACEBOOK_PAGES_ACCESS_TOKEN::"
-      },
-      {
-        "name": "TARGET_BIGQUERY_PROJECT_ID_STAGING",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:TARGET_BIGQUERY_PROJECT_ID_STAGING::"
-      },
-      {
-        "name": "TARGET_BIGQUERY_PROJECT_ID_DEV",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:TARGET_BIGQUERY_PROJECT_ID_DEV::"
-      },
-      {
-        "name": "TARGET_BIGQUERY_PROJECT_ID_PROD",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:TARGET_BIGQUERY_PROJECT_ID_PROD::"
-      },
-      {
-        "name": "TARGET_BIGQUERY_PROJECT_ID_DATA",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:TARGET_BIGQUERY_PROJECT_ID_DATA::"
-      },
-      {
-        "name": "DBT_BIGQUERY_TYPE",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_TYPE::"
-      },
-      {
-        "name": "DBT_BIGQUERY_PROJECT_ID",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_PROJECT_ID::"
-      },
-      {
-        "name": "DBT_BIGQUERY_PRIVATE_KEY_ID",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_PRIVATE_KEY_ID::"
-      },
-      {
-        "name": "DBT_BIGQUERY_PRIVATE_KEY",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_PRIVATE_KEY::"
-      },
-      {
-        "name": "DBT_BIGQUERY_CLIENT_EMAIL",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_CLIENT_EMAIL::"
-      },
-      {
-        "name": "DBT_BIGQUERY_CLIENT_ID",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_CLIENT_ID::"
-      },
-      {
-        "name": "DBT_BIGQUERY_AUTH_URI",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_AUTH_URI::"
-      },
-      {
-        "name": "DBT_BIGQUERY_TOKEN_URI",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_TOKEN_URI::"
-      },
-      {
-        "name": "DBT_BIGQUERY_AUTH_PROVIDER_X509_CERT_URL",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_AUTH_PROVIDER_X509_CERT_URL::"
-      },
-      {
-        "name": "DBT_BIGQUERY_CLIENT_X509_CERT_URL",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/gcp_master_access-Khol62:DBT_BIGQUERY_CLIENT_X509_CERT_URL::"
+        "valueFrom": "example_meltano_db_uri"
       },
       {
         "name": "AIRFLOW__CORE__FERNET_KEY",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__FERNET_KEY::"
+        "valueFrom": "example_core_fernet_key"
       }
 
     ],
@@ -230,19 +81,19 @@
     "secrets": [
       {
         "name": "AIRFLOW__CORE__EXECUTOR",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__EXECUTOR::"
+        "valueFrom": "example_core_executor"
       },
       {
         "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:airflow/rds-1ErqIF:url::"
+        "valueFrom": "example_sql_alchemy_connection"
       },
       {
         "name": "MELTANO_DATABASE_URI",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/rds-YK6UGI:url::"
+        "valueFrom": "example_meltano_db_uri"
       },
       {
         "name": "AIRFLOW__CORE__FERNET_KEY",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__FERNET_KEY::"
+        "valueFrom": "example_core_fernet_key"
       }
     ],
     "volumesFrom": []
@@ -279,19 +130,19 @@
     "secrets": [
       {
         "name": "AIRFLOW__CORE__EXECUTOR",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__EXECUTOR::"
+        "valueFrom": "example_core_executor"
       },
       {
         "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:airflow/rds-1ErqIF:url::"
+        "valueFrom": "example_sql_alchemy_connection"
       },
       {
         "name": "MELTANO_DATABASE_URI",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/rds-YK6UGI:url::"
+        "valueFrom": "example_meltano_db_uri"
       },
       {
         "name": "AIRFLOW__CORE__FERNET_KEY",
-        "valueFrom": "arn:aws:secretsmanager:us-east-1:451041955630:secret:meltano/production-VK1iIN:AIRFLOW__CORE__FERNET_KEY::"
+        "valueFrom": "example_core_fernet_key"
       }
     ],
     "volumesFrom": []
