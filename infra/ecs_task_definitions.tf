@@ -19,35 +19,16 @@ resource "aws_ecs_task_definition" "meltano" {
   volume {
     name = "meltano-volume"
   }
-
-  tags = {
-    Terraform = "true"
-  }
 }
 
 resource "aws_cloudwatch_log_group" "airflow_scheduler" {
   name = "/aws/ecs/meltano/airflow-scheduler"
-
-  tags = {
-    Terraform   = "true"
-    Application = "meltano"
-  }
 }
 
 resource "aws_cloudwatch_log_group" "meltano_ui" {
   name = "/aws/ecs/meltano/meltano-ui"
-
-  tags = {
-    Terraform   = "true"
-    Application = "meltano"
-  }
 }
 
 resource "aws_cloudwatch_log_group" "ariflow_webserver" {
   name = "/aws/ecs/meltano/airflow-webserver"
-
-  tags = {
-    Terraform   = "true"
-    Application = "meltano"
-  }
 }

@@ -48,8 +48,4 @@ module "alb_airflow" {
       target_group_index = 0
     }
   ]
-
-  tags = {
-    Terraform = "true"
-  }
 }

@@ -18,8 +18,4 @@ module "ecs" {
       weight            = 1
     }
   ]
-
-  tags = {
-    Terraform = "true"
-  }
 }
