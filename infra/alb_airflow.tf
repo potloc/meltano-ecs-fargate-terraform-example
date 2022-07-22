@@ -36,7 +36,7 @@ module "alb_airflow" {
     {
       port               = 443
       protocol           = "HTTPS"
-      certificate_arn    = var.star_potloc_com_certificate_arn
+      certificate_arn    = var.star_app_certificate_arn
       target_group_index = 0
     }
   ]
