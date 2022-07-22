@@ -9,13 +9,13 @@ module "alb_airflow" {
   idle_timeout       = 300
 
   vpc_id          = local.vpc_id
-  subnets         = "<subnet_id(s)>"
-  security_groups = ["<security_groups>"]
+  subnets         = local.subnet_ids
+  security_groups = [local.security_groups_ids]
 
   # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group
   target_groups = [
     {
-      name                 = "<target_group_name>"
+      name                 = local.airflow_tg_name
       backend_protocol     = "HTTP"
       backend_port         = 80
       target_type          = "ip"
@@ -36,7 +36,7 @@ module "alb_airflow" {
     {
       port               = 443
       protocol           = "HTTPS"
-      certificate_arn    = "<certificate_arn>"
+      certificate_arn    = var.star_potloc_com_certificate_arn
       target_group_index = 0
     }
   ]
