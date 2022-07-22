@@ -1,0 +1,150 @@
+[
+  {
+    "name": "airflow-scheduler",
+    "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/meltano/meltano:latest",
+    "cpu": 1024,
+    "memory": 2048,
+    "essential": true,
+    "command": ["invoke", "airflow", "scheduler"],
+    "environment": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${aws_cloudwatch_airflow_scheduler_log_group_name}",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "mountPoints": [
+      {
+        "containerPath": "/project/.meltano/run/airflow",
+        "sourceVolume": "meltano-volume"
+      }
+    ],
+    "portMappings": [
+      {
+        "hostPort": 8793,
+        "protocol": "tcp",
+        "containerPort": 8793
+      }
+    ],
+    "secrets": [
+      {
+        "name": "AIRFLOW__CORE__EXECUTOR",
+        "valueFrom": "example_core_executor"
+      },
+      {
+        "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+        "valueFrom": "example_sql_alchemy_connection"
+      },
+      {
+        "name": "MELTANO_DATABASE_URI",
+        "valueFrom": "example_meltano_db_uri"
+      },
+      {
+        "name": "AIRFLOW__CORE__FERNET_KEY",
+        "valueFrom": "example_core_fernet_key"
+      }
+
+    ],
+    "volumesFrom": []
+  },
+  {
+    "name": "meltano-ui",
+    "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/meltano/meltano:latest",
+    "cpu": 512,
+    "memory": 1024,
+    "essential": false,
+    "command": ["ui"],
+    "environment": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${aws_cloudwatch_meltano_ui_log_group_name}",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "mountPoints": [
+      {
+        "containerPath": "/project/.meltano/run/airflow",
+        "sourceVolume": "meltano-volume"
+      }
+    ],
+    "portMappings": [
+      {
+        "hostPort": 5000,
+        "protocol": "tcp",
+        "containerPort": 5000
+      }
+    ],
+    "secrets": [
+      {
+        "name": "AIRFLOW__CORE__EXECUTOR",
+        "valueFrom": "example_core_executor"
+      },
+      {
+        "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+        "valueFrom": "example_sql_alchemy_connection"
+      },
+      {
+        "name": "MELTANO_DATABASE_URI",
+        "valueFrom": "example_meltano_db_uri"
+      },
+      {
+        "name": "AIRFLOW__CORE__FERNET_KEY",
+        "valueFrom": "example_core_fernet_key"
+      }
+    ],
+    "volumesFrom": []
+  },
+  {
+    "name": "airflow-webserver",
+    "image": "451041955630.dkr.ecr.us-east-1.amazonaws.com/meltano/meltano:latest",
+    "cpu": 512,
+    "memory": 1024,
+    "essential": false,
+    "command": ["invoke", "airflow", "webserver"],
+    "environment": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${aws_cloudwatch_airflow_webserver_log_group_name}",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "ecs"
+      }
+    },
+    "mountPoints": [
+      {
+        "containerPath": "/project/.meltano/run/airflow",
+        "sourceVolume": "meltano-volume"
+      }
+    ],
+    "portMappings": [
+      {
+        "hostPort": 8080,
+        "protocol": "tcp",
+        "containerPort": 8080
+      }
+    ],
+    "secrets": [
+      {
+        "name": "AIRFLOW__CORE__EXECUTOR",
+        "valueFrom": "example_core_executor"
+      },
+      {
+        "name": "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN",
+        "valueFrom": "example_sql_alchemy_connection"
+      },
+      {
+        "name": "MELTANO_DATABASE_URI",
+        "valueFrom": "example_meltano_db_uri"
+      },
+      {
+        "name": "AIRFLOW__CORE__FERNET_KEY",
+        "valueFrom": "example_core_fernet_key"
+      }
+    ],
+    "volumesFrom": []
+  }
+]
