@@ -4,5 +4,8 @@ locals {
   security_groups = ["security_group_1_id", "security_group_2_id"]
   airflow_tg_name = "airlow_target_group"
   meltano_tg_name = "meltano_target_group"
-  certificate_arn = "my_arn_certificate"
+  certificate_arn = ""
+  task_role_arn = ""
+  secretmanager_secret_name = ""
+  bucket_name = ""
 }
